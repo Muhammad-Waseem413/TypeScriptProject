@@ -7,7 +7,7 @@ interface ITodo {
   complete: boolean;
 }
 
-function App() {
+function App(): JSX.Element {
   const [value, setValue] = React.useState<string>("");
   const [todos, setTodo] = React.useState<ITodo[]>([]);
 
@@ -17,12 +17,22 @@ function App() {
     setValue("");
   };
 
-  const addTodo = (text: string) => {
+  const addTodo = (text: string): void => {
     const newTodo: ITodo[] = [...todos, { text, complete: false }];
     setTodo(newTodo);
   };
 
-  console.log(todos);
+  const completeTodo = (index: number): void => {
+    const newTodos: ITodo[] = [...todos];
+    newTodos[index].complete = !newTodos[index].complete;
+    setTodo(newTodos);
+  };
+
+  const removeTodo = (index: number): void => {
+    const newTodos: ITodo[] = [...todos];
+    newTodos.splice(index, 1);
+    setTodo(newTodos);
+  };
 
   return (
     <div className="App">
@@ -39,9 +49,17 @@ function App() {
       <div>
         {todos.map((todo: ITodo, index: number) => {
           return (
-            <ul key={index}>
-              <li>{todo.text}</li>
-            </ul>
+            <div key={index}>
+              <ul>
+                <li>{todo.text}</li>
+              </ul>
+              <button type="button" onClick={() => completeTodo(index)}>
+                {todo.complete ? "complete" : "incomplete"}
+              </button>
+              <button type="button" onClick={() => removeTodo(index)}>
+                x
+              </button>
+            </div>
           );
         })}
       </div>
